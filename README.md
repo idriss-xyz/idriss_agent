@@ -1,23 +1,29 @@
 # IDRISS AI Token Finder for Farcaster
 
-## Getting Started
+## Prerequisites
 
-- Make sure you have Python 3.11.10
-- Make sure you have Poetry installed
+- Python 3.11.10
+- Python Dev package (install python3.11-dev / python3.11-devel depending on OS)
+- [Poetry](https://python-poetry.org/docs/#installing-with-pipx) 
+- Poetry Shell (`poetry self add poetry-plugin-shell`)
+- [Go](https://go.dev/doc/install) and [Tendermint](https://docs.tendermint.com/v0.33/introduction/install.html)
+- Docker
 
 ### Installation and Setup for Development
 
 ```shell
-git clone https://github.com/victorpolisetty/idriss_project.git
-cd visualisation_station
 poetry env use 3.11.10
-poetry install && poetry shell
+poetry install --no-root && poetry shell
 make install
 ```
 
 ## How to run agent
 
 ```shell
+# Run tendermint docker container
+docker run -it --rm -v "/tmp:/tendermint" tendermint/tendermint init
+docker run -it --rm -v "/tmp:/tendermint" tendermint/tendermint node --proxy_app=kvstore
+# Run agent
 ./scripts/run_single_agent.sh victorpolisetty/idriss_frontend --force
 ```
 Warning: Docker must be running
@@ -109,10 +115,6 @@ tar -xvf tendermint_0.34.24_linux_amd64.tar.gz
 sudo mv tendermint /usr/local/bin/
 tendermint version  # Verify installation
 tendermint init --home /root/.tendermint
-docker run -d --name tendermint \
-  -p 26656:26656 \
-  -p 26657:26657 \
-  tendermint/tendermint start
 ```
 
 Configure Nginx Reverse Proxy
@@ -124,7 +126,7 @@ sudo vim /etc/nginx/sites-available/default
 #Replace contents with:
 server {
     listen 80;
-    server_name YOUR_SERVER_IP;
+    server_name YOUR_SERVER_ADDRESS;
 
     location / {
         proxy_pass http://127.0.0.1:5555;
@@ -134,7 +136,7 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
-# You can get YOUR_SERVER_IP by running: curl ifconfig.me
+# You can get YOUR_SERVER_ADDRESS by running: curl ifconfig.me
 
 #Restart Nginx:
 sudo systemctl restart nginx
@@ -172,7 +174,7 @@ poetry install --no-root
 #sync Olas packages
 poetry run autonomy packages sync
 #start docker tendermint
-docker-compose up -d
+docker compose up -d
 ```
 
 Run the project
@@ -195,7 +197,7 @@ ps aux | grep tendermint
 sudo kill -9 <4 digit process number>
 #Restart Tendermint
 tendermint unsafe-reset-all --home /root/.tendermint
-tendermint start --home /root/.tendermint &
+tendermint start --home /root/.tendermint
 ```
 
 ## How to run API from Digital Ocean

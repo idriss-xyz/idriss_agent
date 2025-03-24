@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "idriss_project"
+name = "idriss_agent"
 version = "0.1.0"
 description = ""
 authors = ["eightballer"]

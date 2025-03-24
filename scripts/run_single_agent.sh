@@ -131,7 +131,7 @@ while [[ "$tries" -lt 20 ]]; do
 done
 
 if [[ "$tm_started" == false ]]; then
-    echo "Error:Tendermint node did not start in time. Please verify that the docker tendermint node is running."
+    echo "Error: Tendermint node did not start in time. Please verify that the Docker Tendermint node is running."
     exit 1
 fi
 
